@@ -6,8 +6,8 @@ import (
 	"pesticide/ticket"
 
 	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/gofiber/fiber/middleware"
+	"gorm.io/gorm"
 )
 
 func helloWorld(c *fiber.Ctx) {
@@ -25,7 +25,7 @@ func setupRoutes(app *fiber.App) {
 
 func initDatabase() {
 	var err error
-	database.DBConn, err = gorm.Open("sqlite3", "tickets.db")
+	database.DBConn, err = gorm.Open(sqlite.Open("tickets.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
@@ -37,6 +37,10 @@ func initDatabase() {
 func main() {
 	app := fiber.New()
 
+	// handle panics and don't kill the server!
+	app.Use(middleware.Recover())
+
+	initDatabase()
 	setupRoutes(app)
 	app.Listen(3000)
 

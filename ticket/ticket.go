@@ -4,8 +4,7 @@ import (
 	"pesticide/database"
 
 	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/gorm"
 )
 
 type Ticket struct {
