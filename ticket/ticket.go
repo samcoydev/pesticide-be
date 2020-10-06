@@ -36,10 +36,16 @@ func GetTicket(c *fiber.Ctx) {
 func NewTicket(c *fiber.Ctx) {
 	fmt.Println("New Ticket")
 	db := database.DBConn
-	var ticket Ticket
-	ticket.Title = "Test ticket"
-	ticket.Description = "Testing our ticket system."
-	ticket.Timestamp = time.Now()
+	ticket := new(Ticket)
+	if err := c.BodyParser(ticket); err != nil {
+		c.Status(503).Send(err)
+		return
+	}
+	/*
+		ticket.Title = "Test ticket"
+		ticket.Description = "Testing our ticket system."
+		ticket.Timestamp = time.Now()
+	*/
 	db.Create(&ticket)
 	c.JSON(ticket)
 }
