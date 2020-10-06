@@ -1,7 +1,9 @@
 package ticket
 
 import (
+	"fmt"
 	"pesticide/database"
+	"time"
 
 	"github.com/gofiber/fiber"
 	"gorm.io/gorm"
@@ -9,12 +11,13 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Timestamp   string `json:"timestamp"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Timestamp   time.Time `json:"timestamp"`
 }
 
 func GetTickets(c *fiber.Ctx) {
+	fmt.Println("Get tickets")
 	db := database.DBConn
 	var tickets []Ticket
 	db.Find(&tickets)
@@ -22,6 +25,7 @@ func GetTickets(c *fiber.Ctx) {
 }
 
 func GetTicket(c *fiber.Ctx) {
+	fmt.Println("Get ticket")
 	id := c.Params("id")
 	db := database.DBConn
 	var ticket Ticket
@@ -30,11 +34,12 @@ func GetTicket(c *fiber.Ctx) {
 }
 
 func NewTicket(c *fiber.Ctx) {
+	fmt.Println("New Ticket")
 	db := database.DBConn
 	var ticket Ticket
 	ticket.Title = "Test ticket"
 	ticket.Description = "Testing our ticket system."
-	ticket.Timestamp = "Aug 28th"
+	ticket.Timestamp = time.Now()
 	db.Create(&ticket)
 	c.JSON(ticket)
 }
@@ -51,4 +56,14 @@ func DeleteTicket(c *fiber.Ctx) {
 	}
 	db.Delete(&ticket)
 	c.Send("Ticket Successfully deleted")
+}
+
+func NewFakeTicket(c *fiber.Ctx) {
+	db := database.DBConn
+	var ticket Ticket
+	ticket.Title = "Fake ticket!"
+	ticket.Description = "Testing our ticket system."
+	ticket.Timestamp = time.Now()
+	db.Create(&ticket)
+	c.JSON(ticket)
 }
