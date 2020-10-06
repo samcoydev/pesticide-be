@@ -45,6 +45,7 @@ func NewTicket(c *fiber.Ctx) {
 }
 
 func DeleteTicket(c *fiber.Ctx) {
+	fmt.Println("Delete ticket")
 	id := c.Params("id")
 	db := database.DBConn
 
