@@ -41,11 +41,6 @@ func NewTicket(c *fiber.Ctx) {
 		c.Status(503).Send(err)
 		return
 	}
-	/*
-		ticket.Title = "Test ticket"
-		ticket.Description = "Testing our ticket system."
-		ticket.Timestamp = time.Now()
-	*/
 	db.Create(&ticket)
 	c.JSON(ticket)
 }
