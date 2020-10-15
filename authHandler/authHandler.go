@@ -3,7 +3,6 @@ package authHandler
 import (
 	"fmt"
 	"pesticide/database"
-	"pesticide/user"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -23,7 +22,7 @@ type User struct {
 func Register(c *fiber.Ctx) {
 	fmt.Println("Someone registered!")
 	db := database.DBConn
-	u := new(user.User)
+	u := new(User)
 
 	// Unpack http request data
 	if err := c.BodyParser(u); err != nil {
@@ -47,30 +46,35 @@ func Register(c *fiber.Ctx) {
 
 func Authenticate(c *fiber.Ctx) {
 	fmt.Println("Someone is logging in")
+
 	db := database.DBConn
-	u := new(user.User)
-	storedUser := new(user.User)
+	user := new(User)
+	var storedUser User
 
 	// Unpack http request data
-	if err := c.BodyParser(u); err != nil {
+	if err := c.BodyParser(user); err != nil {
+		fmt.Println("Error parsing")
 		c.Status(503).Send(err)
 		return
 	}
 
-	fmt.Println(string(u.Username))
-
-	// Finds the user object in database that matches the hhtp requests id
-	if storedUser := db.Find(&u, string(u.Username)); storedUser != nil {
-		fmt.Println("Unauthorized")
-		c.Send(storedUser)
+	// Get object from database
+	rows, err := db.Debug().Model(&User{}).Where("username = ?", user.Username).Select("Username, Password").Rows()
+	if err != nil {
+		fmt.Println("Ran into issue")
 		return
 	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(storedUser.Password), []byte(u.Password)); err != nil {
-		fmt.Println("Wrong password")
-		c.Send(err)
-		return
+	for rows.Next() {
+		db.ScanRows(rows, &storedUser)
 	}
 
-	fmt.Println("User logged in!", u.Username)
+	if err := VerifyPassword(storedUser.Password, user.Password); err != nil {
+		fmt.Println("Passwords dont match")
+	}
+
+	fmt.Println("User logged in!")
+}
+
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
