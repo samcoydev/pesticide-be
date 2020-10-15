@@ -19,29 +19,20 @@ type User struct {
 	Token     string `json:"token"`
 }
 
-func Register(c *fiber.Ctx) {
-	fmt.Println("Someone registered!")
+func Register(ctx *fiber.Ctx) {
 	db := database.DBConn
-	u := new(User)
+	user := new(User)
 
-	// Unpack http request data
-	if err := c.BodyParser(u); err != nil {
-		c.Status(503).Send(err)
+	// Create a user object from the posted data in "ctx"
+	if err := ctx.BodyParser(user); err != nil {
+		fmt.Println("Error parsing")
+		ctx.Status(503).Send(err)
 		return
 	}
 
-	// Encrypt password here
-	if hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 8); err != nil {
-		c.Status(503).Send(err)
-		return
-	} else {
-		// Change password to the hashed version
-		u.Password = string(hashedPassword)
+	user.Password = encryptPassword(user.Password)
 
-		// Add a row with user object
-		db.Create(&u)
-		c.JSON(u)
-	}
+	db.Create(&user)
 }
 
 func Authenticate(c *fiber.Ctx) {
@@ -68,13 +59,21 @@ func Authenticate(c *fiber.Ctx) {
 		db.ScanRows(rows, &storedUser)
 	}
 
-	if err := VerifyPassword(storedUser.Password, user.Password); err != nil {
+	if err := verifyPassword(storedUser.Password, user.Password); err != nil {
 		fmt.Println("Passwords dont match")
 	}
 
 	fmt.Println("User logged in!")
 }
 
-func VerifyPassword(hashedPassword, password string) error {
+func encryptPassword(password string) string {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
+	if err != nil {
+		fmt.Println("error encrypting password")
+	}
+	return string(hashedPassword)
+}
+
+func verifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
