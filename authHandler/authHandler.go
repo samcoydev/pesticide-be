@@ -30,7 +30,14 @@ func Register(ctx *fiber.Ctx) {
 		return
 	}
 
-	user.Password = encryptPassword(user.Password)
+	encryptedPassword, err := encryptPassword(user.Password)
+	if err != nil {
+		fmt.Println("Error encrypting your password")
+		ctx.Status(503).Send(err)
+		return
+	}
+
+	user.Password = encryptedPassword
 
 	db.Create(&user)
 }
@@ -71,12 +78,12 @@ func findUserByUsername(username string) (User, error) {
 	return dbUser, result.Error
 }
 
-func encryptPassword(password string) string {
+func encryptPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 	if err != nil {
-		fmt.Println("error encrypting password")
+		return "", err
 	}
-	return string(hashedPassword)
+	return string(hashedPassword), err
 }
 
 func verifyPassword(hashedPassword, password string) error {
