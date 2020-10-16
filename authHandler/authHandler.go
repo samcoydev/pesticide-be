@@ -1,13 +1,12 @@
-package authHandler
+package authhandler
 
 import (
 	"fmt"
 	"pesticide/database"
-	models "pesticide/models"
-
-	"golang.org/x/crypto/bcrypt"
+	models "pesticide/models/user"
 
 	"github.com/gofiber/fiber"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(ctx *fiber.Ctx) {

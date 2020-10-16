@@ -1,8 +1,8 @@
 package router
 
 import (
-	"pesticide/authHandler"
-	"pesticide/ticket"
+	"pesticide/authhandler"
+	ticket "pesticide/models/ticket"
 
 	"github.com/gofiber/fiber"
 )
@@ -14,6 +14,6 @@ func SetupRoutes(app *fiber.App) {
 	app.Delete("/api/v1/ticket/:id", ticket.DeleteTicket)
 	app.Get("/api/v1/createfaketicket", ticket.NewFakeTicket)
 
-	app.Post("/api/v1/users/register", authHandler.Register)
-	app.Post("/api/v1/users/authenticate", authHandler.Authenticate)
+	app.Post("/api/v1/users/register", authhandler.Register)
+	app.Post("/api/v1/users/authenticate", authhandler.Authenticate)
 }

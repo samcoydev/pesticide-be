@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"pesticide/database"
+	"pesticide/models/ticket"
 	"pesticide/router"
-	"pesticide/ticket"
 
 	"github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
@@ -16,19 +16,18 @@ import (
 func main() {
 	app := fiber.New()
 
-	// handle panics and don't kill the server!
 	app.Use(middleware.Recover())
 	app.Use(cors.New())
 
-	initTicketDatabase()
+	initDatabase()
 	router.SetupRoutes(app)
 	app.Listen(3000)
 }
 
-func initTicketDatabase() {
+func initDatabase() {
 	var err error
-	database.DBConn, err = gorm.Open(sqlite.Open("tickets.db"), &gorm.Config{})
 
+	database.DBConn, err = gorm.Open(sqlite.Open("tickets.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
