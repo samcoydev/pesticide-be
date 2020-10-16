@@ -3,25 +3,16 @@ package authHandler
 import (
 	"fmt"
 	"pesticide/database"
+	models "pesticide/models"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber"
 )
 
-type User struct {
-	gorm.Model
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Token     string `json:"token"`
-}
-
 func Register(ctx *fiber.Ctx) {
 	db := database.DBConn
-	user := new(User)
+	user := new(models.User)
 
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
@@ -43,7 +34,7 @@ func Register(ctx *fiber.Ctx) {
 }
 
 func Authenticate(ctx *fiber.Ctx) {
-	user := new(User)
+	user := new(models.User)
 
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
@@ -65,9 +56,9 @@ func Authenticate(ctx *fiber.Ctx) {
 	fmt.Println("User logged in!")
 }
 
-func findUserByUsername(username string) (User, error) {
+func findUserByUsername(username string) (models.User, error) {
 	db := database.DBConn
-	var dbUser User
+	var dbUser models.User
 
 	result := db.Table("users").Where("username = ?", username).First(&dbUser)
 	if result.Error != nil {
