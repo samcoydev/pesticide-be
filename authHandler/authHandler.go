@@ -16,14 +16,14 @@ func Register(ctx *fiber.Ctx) {
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
 		fmt.Println("Error parsing")
-		ctx.Status(503).Send(err)
+		ctx.Status(401).Send(err)
 		return
 	}
 
 	encryptedPassword, err := encryptPassword(user.Password)
 	if err != nil {
 		fmt.Println("Error encrypting your password")
-		ctx.Status(503).Send(err)
+		ctx.Status(401).Send(err)
 		return
 	}
 
@@ -37,22 +37,25 @@ func Authenticate(ctx *fiber.Ctx) {
 
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
-		ctx.Status(503).Send(err)
+		ctx.Status(401).Send(err)
 		return
 	}
 
 	dbUser, err := findUserByUsername(user.Username)
 	if err != nil {
 		fmt.Println("Cannot find user: ", user.Username)
+		ctx.Status(401).Send(err)
 		return
 	}
 
 	if err := verifyPassword(dbUser.Password, user.Password); err != nil {
 		fmt.Println("Passwords dont match for user: ", user.Username)
+		ctx.Status(401).Send(err)
 		return
 	}
 
 	fmt.Println("User logged in!")
+	ctx.JSON(user)
 }
 
 func findUserByUsername(username string) (models.User, error) {

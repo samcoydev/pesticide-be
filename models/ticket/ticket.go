@@ -38,7 +38,7 @@ func NewTicket(c *fiber.Ctx) {
 	db := database.DBConn
 	ticket := new(Ticket)
 	if err := c.BodyParser(ticket); err != nil {
-		c.Status(503).Send(err)
+		c.Status(401).Send(err)
 		return
 	}
 	db.Create(&ticket)
@@ -53,7 +53,7 @@ func DeleteTicket(c *fiber.Ctx) {
 	var ticket Ticket
 	db.First(&ticket, id)
 	if ticket.Title == "" {
-		c.Status(500).Send("No ticket found with ID")
+		c.Status(401).Send("No ticket found with ID")
 		return
 	}
 	db.Delete(&ticket)
