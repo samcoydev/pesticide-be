@@ -16,7 +16,7 @@ type Ticket struct {
 	Timestamp   time.Time `json:"timestamp"`
 }
 
-var fromName string = "ticket.go"
+var fromName string = "[ticket.go]"
 
 func GetTickets(c *fiber.Ctx) {
 	log.Debug(fromName, "Get tickets")

@@ -13,10 +13,11 @@ import (
 	"gorm.io/gorm"
 )
 
-var fromName string = "main.go"
+var fromName string = "[main.go]"
 
 func main() {
 	app := fiber.New()
+	log.InitLog(fromName, "Logs initialized")
 
 	app.Use(middleware.Recover())
 	app.Use(cors.New())

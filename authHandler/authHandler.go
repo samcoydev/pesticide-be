@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var fromName string = "authHandler.go"
+var fromName string = "[authHandler.go]"
 
 func Register(ctx *fiber.Ctx) {
 	db := database.DBConn

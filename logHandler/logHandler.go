@@ -1,22 +1,34 @@
 package logHandler
 
 import (
-	"fmt"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
-func Debug(from string, msg string) {
-	fromName := "[" + from + "] "
-	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "] "
+var log = logrus.New()
 
-	fmt.Println(fromName, timeStamp, msg)
+func InitLog(fromName string, msg string) {
+	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "]"
+
+	log.SetLevel(logrus.DebugLevel)
+
+	log.SetFormatter(&logrus.TextFormatter{
+		DisableTimestamp: true,
+		DisableQuote:     true,
+		ForceColors:      true,
+	})
+	log.Info(timeStamp, fromName+" ", msg)
+}
+
+func Debug(fromName string, msg string) {
+	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "]"
+
+	log.Debug(timeStamp, fromName+" ", msg)
 }
 
 func Err(msg string) {
-	log.Error(msg)
+	log.Errorln(msg)
 }
 
 func Warn(msg string) {
-	log.Warn(msg)
 }
