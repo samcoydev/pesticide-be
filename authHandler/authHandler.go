@@ -1,13 +1,15 @@
 package authhandler
 
 import (
-	"fmt"
 	"pesticide/database"
+	log "pesticide/logHandler"
 	models "pesticide/models/user"
 
 	"github.com/gofiber/fiber"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var fromName string = "[authHandler.go]"
 
 func Register(ctx *fiber.Ctx) {
 	db := database.DBConn
@@ -15,14 +17,14 @@ func Register(ctx *fiber.Ctx) {
 
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
-		fmt.Println("Error parsing")
+		log.Debug(fromName, "Error parsing")
 		ctx.Status(401).Send(err)
 		return
 	}
 
 	encryptedPassword, err := encryptPassword(user.Password)
 	if err != nil {
-		fmt.Println("Error encrypting your password")
+		log.Debug(fromName, "Error encrypting your password")
 		ctx.Status(401).Send(err)
 		return
 	}
@@ -43,18 +45,18 @@ func Authenticate(ctx *fiber.Ctx) {
 
 	dbUser, err := findUserByUsername(user.Username)
 	if err != nil {
-		fmt.Println("Cannot find user: ", user.Username)
+		log.Debug(fromName, "Cannot find user: "+user.Username)
 		ctx.Status(401).Send(err)
 		return
 	}
 
 	if err := verifyPassword(dbUser.Password, user.Password); err != nil {
-		fmt.Println("Passwords dont match for user: ", user.Username)
+		log.Debug(fromName, "Passwords dont match for user: "+user.Username)
 		ctx.Status(401).Send(err)
 		return
 	}
 
-	fmt.Println("User logged in!")
+	log.Debug(fromName, "User logged in!")
 	ctx.JSON(user)
 }
 

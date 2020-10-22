@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"pesticide/database"
+	log "pesticide/logHandler"
 	"pesticide/models/ticket"
 	"pesticide/router"
 
@@ -13,8 +13,11 @@ import (
 	"gorm.io/gorm"
 )
 
+var fromName string = "[main.go]"
+
 func main() {
 	app := fiber.New()
+	log.InitLog(fromName, "Logs initialized")
 
 	app.Use(middleware.Recover())
 	app.Use(cors.New())
@@ -32,7 +35,7 @@ func initDatabase() {
 		panic("failed to connect to database")
 	}
 
-	fmt.Println("Connection Opened to Ticket Database")
+	log.Debug(fromName, "Connection Opened to Ticket Database")
 	database.DBConn.AutoMigrate(&ticket.Ticket{})
-	fmt.Println("Ticket Database Migrated")
+	log.Debug(fromName, "Ticket Database Migrated")
 }

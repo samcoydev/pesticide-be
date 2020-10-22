@@ -1,8 +1,8 @@
 package ticket
 
 import (
-	"fmt"
 	"pesticide/database"
+	log "pesticide/logHandler"
 	"time"
 
 	"github.com/gofiber/fiber"
@@ -16,8 +16,10 @@ type Ticket struct {
 	Timestamp   time.Time `json:"timestamp"`
 }
 
+var fromName string = "[ticket.go]"
+
 func GetTickets(c *fiber.Ctx) {
-	fmt.Println("Get tickets")
+	log.Debug(fromName, "Get tickets")
 	db := database.DBConn
 	var tickets []Ticket
 	db.Find(&tickets)
@@ -25,7 +27,7 @@ func GetTickets(c *fiber.Ctx) {
 }
 
 func GetTicket(c *fiber.Ctx) {
-	fmt.Println("Get ticket")
+	log.Debug(fromName, "Get ticket")
 	id := c.Params("id")
 	db := database.DBConn
 	var ticket Ticket
@@ -34,7 +36,7 @@ func GetTicket(c *fiber.Ctx) {
 }
 
 func NewTicket(c *fiber.Ctx) {
-	fmt.Println("New Ticket")
+	log.Debug(fromName, "New Ticket")
 	db := database.DBConn
 	ticket := new(Ticket)
 	if err := c.BodyParser(ticket); err != nil {
@@ -46,7 +48,7 @@ func NewTicket(c *fiber.Ctx) {
 }
 
 func DeleteTicket(c *fiber.Ctx) {
-	fmt.Println("Delete ticket")
+	log.Debug(fromName, "Delete ticket")
 	id := c.Params("id")
 	db := database.DBConn
 
