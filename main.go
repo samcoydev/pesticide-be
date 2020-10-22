@@ -13,6 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var fromName string = "main.go"
+
 func main() {
 	app := fiber.New()
 
@@ -32,7 +34,7 @@ func initDatabase() {
 		panic("failed to connect to database")
 	}
 
-	log.Debug("Connection Opened to Ticket Database")
+	log.Debug(fromName, "Connection Opened to Ticket Database")
 	database.DBConn.AutoMigrate(&ticket.Ticket{})
-	log.Debug("Ticket Database Migrated")
+	log.Debug(fromName, "Ticket Database Migrated")
 }
