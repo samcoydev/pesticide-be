@@ -17,14 +17,34 @@ func Register(ctx *fiber.Ctx) {
 
 	// Create a user object from the posted data in "ctx"
 	if err := ctx.BodyParser(user); err != nil {
-		log.Debug(fromName, "Error parsing")
+		log.Err(fromName, "Error parsing")
 		ctx.Status(401).Send(err)
 		return
 	}
 
+	// See if there are multiple accounts with the same username
+	otherUser, err := findUserByUsername(user.Username)
+	if err == nil {
+		log.Err(fromName, "User with same Username found")
+		ctx.Status(401).Send(err)
+		return
+	}
+
+	log.Info(fromName, "No user with name "+otherUser.Username+"found. Good to go!")
+
+	// See if there are multiple accounts with the same email
+	otherEmail, err := findUserByEmail(user.Email)
+	if err == nil {
+		log.Err(fromName, "User with same Email found")
+		ctx.Status(401).Send(err)
+		return
+	}
+
+	log.Info(fromName, "No user with email "+otherEmail.Email+"found. Good to go!")
+
 	encryptedPassword, err := encryptPassword(user.Password)
 	if err != nil {
-		log.Debug(fromName, "Error encrypting your password")
+		log.Err(fromName, "Error encrypting your password")
 		ctx.Status(401).Send(err)
 		return
 	}
@@ -45,13 +65,13 @@ func Authenticate(ctx *fiber.Ctx) {
 
 	dbUser, err := findUserByUsername(user.Username)
 	if err != nil {
-		log.Debug(fromName, "Cannot find user: "+user.Username)
+		log.Err(fromName, "Cannot find user: "+user.Username)
 		ctx.Status(401).Send(err)
 		return
 	}
 
 	if err := verifyPassword(dbUser.Password, user.Password); err != nil {
-		log.Debug(fromName, "Passwords dont match for user: "+user.Username)
+		log.Err(fromName, "Passwords dont match for user: "+user.Username)
 		ctx.Status(401).Send(err)
 		return
 	}
@@ -65,6 +85,19 @@ func findUserByUsername(username string) (models.User, error) {
 	var dbUser models.User
 
 	result := db.Table("users").Where("username = ?", username).First(&dbUser)
+	if result.Error != nil {
+		return dbUser, result.Error
+	}
+
+	result.Scan(&dbUser)
+	return dbUser, result.Error
+}
+
+func findUserByEmail(email string) (models.User, error) {
+	db := database.DBConn
+	var dbUser models.User
+
+	result := db.Table("users").Where("email = ?", email).First(&dbUser)
 	if result.Error != nil {
 		return dbUser, result.Error
 	}

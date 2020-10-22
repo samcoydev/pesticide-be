@@ -11,9 +11,10 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Timestamp   time.Time `json:"timestamp"`
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	Timestamp        time.Time `json:"timestamp"`
+	AssignedUsername string    `json:"username"`
 }
 
 var fromName string = "[ticket.go]"

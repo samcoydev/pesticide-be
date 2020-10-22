@@ -38,4 +38,5 @@ func initDatabase() {
 	log.Debug(fromName, "Connection Opened to Ticket Database")
 	database.DBConn.AutoMigrate(&ticket.Ticket{})
 	log.Debug(fromName, "Ticket Database Migrated")
+
 }
