@@ -2,6 +2,7 @@ package authhandler
 
 import (
 	"pesticide/database"
+	mail "pesticide/emailHandler"
 	log "pesticide/logHandler"
 	models "pesticide/models/user"
 
@@ -50,6 +51,8 @@ func Register(ctx *fiber.Ctx) {
 	}
 
 	user.Password = encryptedPassword
+
+	mail.SendEmail(*user)
 
 	db.Create(&user)
 }

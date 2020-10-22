@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var fromName string = "[main.go]"
+var fromName = "[main.go]"
 
 func main() {
 	app := fiber.New()
