@@ -26,9 +26,20 @@ func Debug(fromName string, msg string) {
 	log.Debug(timeStamp, fromName+" ", msg)
 }
 
-func Err(msg string) {
-	log.Errorln(msg)
+func Info(fromName string, msg string) {
+	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "]"
+
+	log.Info(timeStamp, fromName+" ", msg)
 }
 
-func Warn(msg string) {
+func Err(fromName string, msg string) {
+	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "]"
+
+	log.Error(timeStamp, fromName+" ", msg)
+}
+
+func Warn(fromName string, msg string) {
+	timeStamp := "[" + time.Now().Format("Jan _2 15:04:05") + "]"
+
+	log.Warn(timeStamp, fromName+" ", msg)
 }
