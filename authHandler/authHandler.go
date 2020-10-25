@@ -80,7 +80,7 @@ func Authenticate(ctx *fiber.Ctx) {
 	}
 
 	log.Debug(fromName, "User logged in!")
-	ctx.JSON(user)
+	ctx.JSON(dbUser)
 }
 
 func findUserByUsername(username string) (models.User, error) {
