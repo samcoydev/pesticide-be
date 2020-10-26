@@ -16,7 +16,7 @@ type Ticket struct {
 	Timestamp        time.Time `json:"timestamp"`
 	AssignedUsername string    `json:"username"`
 	PriorityLevel    int       `json:"prioritylevel"`
-	Closed           bool      `json:"closed"`
+	Status           int       `json:"status"`
 }
 
 var fromName string = "[ticket.go]"
