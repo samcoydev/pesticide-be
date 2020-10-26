@@ -15,7 +15,7 @@ type Ticket struct {
 	Description      string    `json:"description"`
 	Timestamp        time.Time `json:"timestamp"`
 	AssignedUsername string    `json:"username"`
-	PriorityLevel    int       `json:"prioritylevel`
+	PriorityLevel    int       `json:"prioritylevel"`
 }
 
 var fromName string = "[ticket.go]"
@@ -82,5 +82,5 @@ func UpdateTicket(c *fiber.Ctx) {
 	ticket = *newTicket
 
 	db.Save(&ticket)
-	c.Send("Ticket Successfully updated")
+	c.JSON(ticket)
 }
