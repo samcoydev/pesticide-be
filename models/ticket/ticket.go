@@ -15,6 +15,7 @@ type Ticket struct {
 	Description      string    `json:"description"`
 	Timestamp        time.Time `json:"timestamp"`
 	AssignedUsername string    `json:"username"`
+	PriorityLevel    int       `json:"prioritylevel`
 }
 
 var fromName string = "[ticket.go]"
@@ -63,12 +64,23 @@ func DeleteTicket(c *fiber.Ctx) {
 	c.Send("Ticket Successfully deleted")
 }
 
-func NewFakeTicket(c *fiber.Ctx) {
+func UpdateTicket(c *fiber.Ctx) {
+	log.Debug(fromName, "Update ticket")
+
+	id := c.Params("id")
 	db := database.DBConn
+
 	var ticket Ticket
-	ticket.Title = "Fake ticket!"
-	ticket.Description = "Testing our ticket system."
-	ticket.Timestamp = time.Now()
-	db.Create(&ticket)
-	c.JSON(ticket)
+	db.Find(&ticket, id)
+
+	newTicket := new(Ticket)
+	if err := c.BodyParser(newTicket); err != nil {
+		c.Status(401).Send(err)
+		return
+	}
+
+	ticket = *newTicket
+
+	db.Save(&ticket)
+	c.Send("Ticket Successfully updated")
 }
