@@ -11,7 +11,7 @@ var smtpServer = "samcodesthings.com"
 
 func SendEmail(_user user.User) {
 	m := gomail.NewMessage()
-	m.SetHeader("From", "testautomatedemail@samcodesthings.com")
+	m.SetHeader("From", "donotreply@samcodesthings.com")
 	m.SetHeader("To", _user.Email)
 	m.SetAddressHeader("Cc", _user.Email, _user.FirstName)
 	m.SetHeader("Subject", "Successfully registered!")
