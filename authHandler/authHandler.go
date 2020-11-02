@@ -83,14 +83,6 @@ func Authenticate(ctx *fiber.Ctx) {
 	ctx.JSON(dbUser)
 }
 
-func GetUsers(ctx *fiber.Ctx) {
-	log.Debug(fromName, "Get Users")
-	db := database.DBConn
-	var users []models.User
-	db.Find(&users)
-	ctx.JSON(users)
-}
-
 func findUserByUsername(username string) (models.User, error) {
 	db := database.DBConn
 	var dbUser models.User
