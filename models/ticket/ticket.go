@@ -11,14 +11,14 @@ import (
 
 type Ticket struct {
 	gorm.Model
-	Title             string    `json:"title"`
-	Description       string    `json:"description"`
-	Timestamp         time.Time `json:"timestamp"`
-	AssignedUserEmail string    `json:"assigneduseremail"`
-	Creator           string    `json:"creator"`
-	PriorityLevel     int       `json:"prioritylevel"`
-	Deadline          time.Time `json:"deadline"`
-	Status            int       `json:"status"`
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	Timestamp        time.Time `json:"timestamp"`
+	AssignedUsername string    `json:"assignedusername"`
+	Creator          string    `json:"creator"`
+	PriorityLevel    int       `json:"prioritylevel"`
+	Deadline         time.Time `json:"deadline"`
+	Status           int       `json:"status"`
 }
 
 var fromName string = "[ticket.go]"
