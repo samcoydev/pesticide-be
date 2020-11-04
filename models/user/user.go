@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/gofiber/fiber"
 	"gorm.io/gorm"
+	"pesticide/models/roles"
 
 	"pesticide/database"
 	log "pesticide/logHandler"
@@ -11,12 +12,13 @@ import (
 
 type User struct {
 	gorm.Model
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Email     string `json:"email"`
-	Token     string `json:"token"`
+	Username  string     `json:"username"`
+	Password  string     `json:"password"`
+	FirstName string     `json:"firstname"`
+	LastName  string     `json:"lastname"`
+	Email     string     `json:"email"`
+	Role      roles.Role `json:"role"`
+	Token     string     `json:"token"`
 }
 
 var fromName string = "[user.go]"

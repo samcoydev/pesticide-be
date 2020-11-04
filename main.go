@@ -4,6 +4,7 @@ import (
 	"pesticide/database"
 	log "pesticide/logHandler"
 	"pesticide/models/ticket"
+	"pesticide/models/user"
 	"pesticide/router"
 
 	"github.com/gofiber/cors"
@@ -30,13 +31,15 @@ func main() {
 func initDatabase() {
 	var err error
 
-	database.DBConn, err = gorm.Open(sqlite.Open("tickets.db"), &gorm.Config{})
+	database.DBConn, err = gorm.Open(sqlite.Open("pesticide.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
 
-	log.Debug(fromName, "Connection Opened to Ticket Database")
+	log.Debug(fromName, "Connection Opened to the Database")
 	database.DBConn.AutoMigrate(&ticket.Ticket{})
-	log.Debug(fromName, "Ticket Database Migrated")
+	log.Debug(fromName, "Ticket Table Migrated")
+	database.DBConn.AutoMigrate(&user.User{})
+	log.Debug(fromName, "User Table Migrated")
 
 }

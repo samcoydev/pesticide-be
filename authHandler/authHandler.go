@@ -51,6 +51,7 @@ func Register(ctx *fiber.Ctx) {
 	}
 
 	user.Password = encryptedPassword
+	user.Role = "User"
 
 	mail.SendEmail(*user)
 
